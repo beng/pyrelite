@@ -10,3 +10,6 @@ doctest.testmod(pyrelite.simpledb)
 
 import pyrelite.fql
 doctest.testmod(pyrelite.fql)
+
+import pyrelite.postgres
+doctest.testmod(pyrelite.postgres)
