@@ -1,5 +1,8 @@
 """
 >>> d = Domain('mydomain')
+>>> d.select(Star()).to_sql()
+'select * from mydomain'
+
 >>> stmt = d.select(Star())
 >>> stmt.where(d.column('city') == 'Seattle').to_sql()
 "select * from mydomain where city = 'Seattle'"
@@ -7,6 +10,22 @@
 >>> city = d.column('city')
 >>> stmt.where((city == 'Seattle') | (city == 'Portland')).to_sql()
 "select * from mydomain where (city = 'Seattle') or (city = 'Portland')"
+
+>>> col_names = ['id', 'first_name', 'last_name', 'city']
+>>> ids = [1, 2, 3, 4]
+>>> stmt = d.select(*map(d.column, col_names))
+>>> stmt.where(d.column('id').in_(*ids)).to_sql()
+'select id, first_name, last_name, city from mydomain where id in (1, 2, 3, 4)'
+
+>>> first_names = ['alpha', 'beta', 'charlie', 'delta']
+>>> stmt.where(d.column('first_name').in_(*first_names)).to_sql()
+"select id, first_name, last_name, city from mydomain where first_name in ('alpha', 'beta', 'charlie', 'delta')"
+
+>>> stmt.where(d.column('id').between(100, 105)).to_sql()
+'select id, first_name, last_name, city from mydomain where id between 100 and 105'
+
+>>> stmt.where(d.column('id').between(100, 105)).to_sql()
+'select id, first_name, last_name, city from mydomain where id between 100 and 105'
 """
 
 import re
@@ -19,12 +38,6 @@ from .node import *
 class Every(Field):
     def __init__(self, field):
         self.field = field
-
-
-class ItemName(Field, Literal):
-    def __init__(self):
-        Field.__init__(self, 'itemName()')
-        Literal.__init__(self, 'itemName()')
 
 
 class Star(Literal):
@@ -50,8 +63,7 @@ class PostgresField(Field):
 class Compiler(SimpleCompiler):
     reserved_words = [
         'or', 'and', 'not', 'from', 'where', 'select', 'like', 'null', 'is',
-        'order', 'by', 'asc', 'desc', 'in', 'between', 'limit',
-        'every'
+        'order', 'by', 'asc', 'desc', 'in', 'between', 'limit', 'every'
     ]
 
     def __init__(self):
