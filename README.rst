@@ -24,7 +24,7 @@ Here's how to build a couple of simple Postgres queries::
     >>> from pyrelite import postgres
     >>> d = postgres.Domain('mydomain')
     >>> d.select(postgres.Star()).where((d['first_name'] == 'Charlie') | (d['first_name'] == 'Delta')).to_sql()
-    "select * from mydomain where (first_name = 'Charlie') or (firt_name = 'Delta')"
+    "select * from mydomain where (first_name = 'Charlie') or (first_name = 'Delta')"
     
     >>> col_names = ['id', 'first_name', 'last_name', 'city']
     >>> ids = [1, 2, 3, 4]
